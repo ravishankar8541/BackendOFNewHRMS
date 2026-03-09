@@ -45,11 +45,9 @@ app.get('/', (req, res) => {
   res.send('HR Module Backend API is running');
 });
 
-/* Run locally but not on Vercel */
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server is running on PORT ${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`Server is running on PORT ${PORT}`);
+});
+
 
 module.exports = app;
