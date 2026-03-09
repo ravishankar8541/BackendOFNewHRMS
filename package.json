@@ -13,6 +13,7 @@
     "nodemailer": "^8.0.1",
     "nodemon": "^3.1.14",
     "number-to-words": "^1.2.4",
+    "phantomjs-prebuilt": "^2.1.16",
     "puppeteer": "^24.38.0"
   },
   "name": "backend",

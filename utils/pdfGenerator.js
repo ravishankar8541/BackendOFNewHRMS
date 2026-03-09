@@ -2,6 +2,7 @@ const pdf = require('html-pdf');
 const ejs = require('ejs');
 const path = require('path');
 const fs = require('fs');
+const phantomjs = require('phantomjs-prebuilt');
 
 const generatePDF = async (data) => {
   const templatePath = path.join(__dirname, '../templates/offerLetter.ejs');
@@ -11,7 +12,6 @@ const generatePDF = async (data) => {
   try {
     const logoPath = path.join(__dirname, '../assets/blackLogo.png');
     const bitmap = fs.readFileSync(logoPath);
-    // Use proper MIME type for PNG
     logoBase64 = `data:image/png;base64,${bitmap.toString('base64')}`;
   } catch (err) {
     console.error("LOGO ERROR: Ensure logo is at backend/assets/blackLogo.png");
@@ -21,32 +21,32 @@ const generatePDF = async (data) => {
     logo: logoBase64,
     offerId: data.offerId,
     employeeName: data.employeeName,
-    fathersName: data.fathersName, 
+    fathersName: data.fathersName,
     address: data.address,
-    phoneNumber: data.phoneNumber, 
-    emailId: data.emailId,         
+    phoneNumber: data.phoneNumber,
+    emailId: data.emailId,
     position: data.position,
     salary: data.salary,
     hrName: data.hrName,
     formattedSalary: Number(data.salary).toLocaleString('en-IN'),
     formattedJoiningDate: new Date(data.joiningDate).toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
     }),
     currentDate: new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
     })
-});
+  });
 
   const options = { 
     format: 'A4', 
     border: { top: '0px', right: '20mm', bottom: '20mm', left: '20mm' },
-    // Lower quality values can blur logos; keep default or use 300 for print
     type: "pdf",
-    quality: "100"
+    quality: "100",
+    phantomPath: phantomjs.path   // ✅ FIX
   };
 
   return new Promise((resolve, reject) => {
