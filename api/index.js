@@ -39,8 +39,16 @@ app.get('/uploads/debug-test', (req, res) => {
   res.send('Static middleware is active!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT ${PORT}`);
+/* Root route so deployment URL works */
+app.get('/', (req, res) => {
+  res.send('HR Module Backend API is running');
 });
 
-module.exports = app;   // ✅ ADD THIS LINE FOR VERCEL
+/* Run locally but not on Vercel */
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on PORT ${PORT}`);
+  });
+}
+
+module.exports = app;
