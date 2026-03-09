@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 dbConnection();
 
 app.use(cors({
-  origin: 'https://hr-module-frontend.vercel.app', 
+  origin: 'https://hrms.viraladsmedia.com', 
   credentials: true,               
 }));
 
