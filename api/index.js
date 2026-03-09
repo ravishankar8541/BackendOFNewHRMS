@@ -18,6 +18,7 @@ const PORT = process.env.PORT || 5000;
 dbConnection();
 
 app.use(cors({
+  
   origin: 'https://hrms.viraladsmedia.com', 
   credentials: true,               
 }));
