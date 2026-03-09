@@ -1,4 +1,5 @@
-const puppeteer = require("puppeteer");
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
 const ejs = require("ejs");
 const path = require("path");
 const fs = require("fs");
@@ -19,22 +20,13 @@ const generatePDF = async (data) => {
 
   const html = await ejs.renderFile(templatePath, {
     logo: logoBase64,
-    offerId: data.offerId,
-    employeeName: data.employeeName,
-    fathersName: data.fathersName,
-    address: data.address,
-    phoneNumber: data.phoneNumber,
-    emailId: data.emailId,
-    position: data.position,
-    salary: data.salary,
-    hrName: data.hrName,
-    formattedSalary: Number(data.salary).toLocaleString("en-IN"),
-    formattedJoiningDate: new Date(data.joiningDate).toLocaleDateString("en-IN"),
-    currentDate: new Date().toLocaleDateString("en-IN")
+    ...data
   });
 
   const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless
   });
 
   const page = await browser.newPage();
