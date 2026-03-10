@@ -9,13 +9,21 @@ const nodemailer = require('nodemailer');
 }); */
 
 const transporter = nodemailer.createTransport({
-   host: "smtp.titan.email",
-  port: 465,
-  secure: true,
+  host: "smtp.titan.email",
+  port: 587,             // ← changed from 465
+  secure: false,         // ← very important: false for STARTTLS on 587
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  }
+  },
+  // Optional: helps debug / avoid strict cert issues in some environments
+  tls: {
+    rejectUnauthorized: true   // keep true unless you get cert errors, then temporarily false for testing
+  },
+  // Optional: increase timeout if still slow
+  connectionTimeout: 10000,  // 10 seconds
+  greetingTimeout: 10000,
+  socketTimeout: 10000
 });
 
 const sendOfferLetter = async (to, offer) => {
