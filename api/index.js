@@ -19,7 +19,7 @@ dbConnection();
 
 app.use(cors({
   
-  origin: 'https://hrms.viraladsmedia.com', 
+  origin: 'https://frontend-of-hrms.vercel.app', 
   credentials: true,               
 }));
 
