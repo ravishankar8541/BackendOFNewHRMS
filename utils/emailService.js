@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 
 // Create transporter with Titan SMTP (STARTTLS - port 587)
+// IMPORTANT NOTE (March 2026): Render FREE tier blocks outbound SMTP ports 25/465/587 since Sep 2025.
+// This code will timeout/hang on free tier → upgrade to paid Render plan OR switch to email API (Resend/Brevo/SendGrid).
 const transporter = nodemailer.createTransport({
   host: 'smtp.titan.email',
   port: 587,
@@ -23,6 +25,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Verify transporter once on startup (logs success or failure)
+// On Render free → this will fail with timeout/connection error
 transporter.verify((error, success) => {
   if (error) {
     console.error('Transporter verification failed:', error);
@@ -97,7 +100,7 @@ const sendOfferLetter = async (to, offer) => {
     console.error('To:', to);
     console.error('Offer ID:', offer?.offerId);
     console.error('Error name:', error.name);
-    console.error('Error code:', error.code);
+    console.error('Error code:', error.code || 'N/A');
     console.error('Error message:', error.message);
     if (error.response) {
       console.error('SMTP server response:', error.response);
@@ -105,7 +108,12 @@ const sendOfferLetter = async (to, offer) => {
     console.error('Full error:', error);
     console.error('Stack:', error.stack);
 
-    throw new Error(`Failed to send email: ${error.message || 'Unknown error'}`);
+    // Improved message for client (shows root cause hint if known)
+    const clientMessage = error.code === 'ETIMEDOUT' || error.message?.includes('timeout')
+      ? 'Failed to send email: Connection timeout (likely Render free tier SMTP block - upgrade plan or use email API)'
+      : `Failed to send email: ${error.message || 'Unknown error'}`;
+
+    throw new Error(clientMessage);
   }
 };
 
